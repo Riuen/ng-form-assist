@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
@@ -25,8 +25,6 @@ export class SmartFieldDirective implements OnInit {
     return this.isInvalid && this.control.touched;
   }
 
-  // private controlStatusChangeEventListener: Subscription;
-
   @Input()
   set errorDetails(value) {
 
@@ -40,7 +38,6 @@ export class SmartFieldDirective implements OnInit {
 
   constructor(
     private control: NgControl,
-    private cdr: ChangeDetectorRef,
     private target: ViewContainerRef,
     private componentFactoryResolver: ComponentFactoryResolver) {
   }
@@ -54,15 +51,10 @@ export class SmartFieldDirective implements OnInit {
 
   @HostListener('keydown') onValueChange() {
     this.formatInput();
-    const msg = this.getErrorMessage();
-    this.isInvalid = (msg && this.control.touched);
-    this.componentRef.instance.errorMessage = msg;
-    console.log(this.control.errors);
+    const errorMsg = this.getErrorMessage();
+    this.isInvalid = (errorMsg && this.control.touched);
+    this.componentRef.instance.errorMessage = errorMsg;
   }
-
-  /* @HostListener('blur') onElementBlur() {
-    this.componentRef.instance.errorMessage = this.getErrorMessage();
-  } */
 
   private createErrorComponent() {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
@@ -116,9 +108,6 @@ export class SmartFieldDirective implements OnInit {
         : null;
 
       this.control.control.setValue(input);
-      console.log('input: ('+input+')');
-      console.log('is invalid: ' + (this.control.invalid && this.control.touched));
-      // this.cdr.markForCheck();
     }
   }
 }
