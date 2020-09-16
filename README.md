@@ -25,6 +25,7 @@ Import the `FormAssistModule` simply attach the `smartField` directive to any fo
 
 ## Vision / TODO
 * Add more comprehensive documentation and examples.
+* Add more validators.
 * Refactor to allow the following to be configurable by the user:
     * Password complexity rules.
     * The css class that must be applied to the field on error.
