@@ -1,6 +1,16 @@
 {
   "name": "ng-form-assist",
   "version": "0.0.16",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Riuen/ng-form-assist.git"
+  },
+  "keywords": [
+    "angular",
+    "reactive forms",
+    "form validation",
+    "typescript"
+  ],
   "peerDependencies": {
     "@angular/common": "^9.1.12",
     "@angular/core": "^9.1.12"

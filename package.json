@@ -1,6 +1,16 @@
 {
   "name": "ng-form-assist",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Riuen/ng-form-assist.git"
+  },
+  "keywords": [
+    "angular",
+    "reactive forms",
+    "form validation",
+    "typescript"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +19,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~9.1.12",
     "@angular/common": "~9.1.12",
