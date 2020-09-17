@@ -36,12 +36,12 @@ export class CustomValidators {
       return null;
     }
 
-    public static validatePasswordMatch(password: string, confirmPassword: string) {
+    public static validatePasswordMatch(passwordField: string, confirmPasswordField: string) {
 
       return (fg: FormGroup) => {
 
-        const passwordCtrl = fg.get(password);
-        const confirmPasswordCtrl = fg.get(confirmPassword);
+        const passwordCtrl = fg.get(passwordField);
+        const confirmPasswordCtrl = fg.get(confirmPasswordField);
 
         if (passwordCtrl && confirmPasswordCtrl) {
 
@@ -96,5 +96,20 @@ export class CustomValidators {
         }
 
         return null;
+    }
+
+    public static validateCustomPattern(pattern: string) {
+
+      return (fc: AbstractControl) => {
+
+        if (!fc.value) {
+          return null;
+        }
+
+        return (fc.value as string).match(pattern)
+        ? null
+        : { validateCustomPattern: 'Login name may only begin with a lowercase letter and can only contain: Letters, \
+            numbers, hypens, periods and underscore'};
+      };
     }
 }
