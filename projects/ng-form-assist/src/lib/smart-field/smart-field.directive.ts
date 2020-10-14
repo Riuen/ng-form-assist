@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
@@ -39,6 +39,7 @@ export class SmartFieldDirective implements OnInit {
   constructor(
     private control: NgControl,
     private target: ViewContainerRef,
+    private cdr: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver) {
   }
 
@@ -51,16 +52,8 @@ export class SmartFieldDirective implements OnInit {
 
   @HostListener('keydown') onValueChange() {
     this.formatInput();
-    const errorMsg = this.getErrorMessage();
-    this.isInvalid = (errorMsg && this.control.touched);
-    this.componentRef.instance.errorMessage = errorMsg;
-  }
-
-  private createErrorComponent() {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
-    this.componentRef = this.target.createComponent(componentFactory);
     this.componentRef.instance.errorMessage = this.getErrorMessage();
-    this.componentRef.instance.fieldControl = this.control;
+    this.cdr.detectChanges();
   }
 
   private getErrorMessage() {
@@ -69,18 +62,24 @@ export class SmartFieldDirective implements OnInit {
 
     if (this.control.errors) {
 
+      this.isInvalid = true;
       console.log(Object.keys(this.control.errors));
       const errorName = Object.keys(this.control.errors)[0];
 
       if (this.errorRepo.has(errorName)) {
         message = this.errorRepo.get(errorName);
-        console.log('retrieving error emssage from cache');
+        console.log('retrieving error emssage from cache: ' + errorName);
+        console.log('message retrieved: ' + message);
       }
       else {
-        console.log('building error message');
+        console.log('building error message for error: ' + errorName);
         message = extractMessage(errorName, this.control.errors[errorName]);
+        console.log('message built: ' + message);
         this.errorRepo.set(errorName, message);
       }
+    }
+    else {
+      this.isInvalid = false;
     }
 
     return message;
@@ -90,6 +89,13 @@ export class SmartFieldDirective implements OnInit {
   // Utils
   private isString(value: any): boolean {
     return ((typeof value) === 'string');
+  }
+
+  private createErrorComponent() {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
+    this.componentRef = this.target.createComponent(componentFactory);
+    this.componentRef.instance.errorMessage = this.getErrorMessage();
+    this.componentRef.instance.fieldControl = this.control;
   }
 
   /* Trims leading and trailing spaces, sets empty string to null */

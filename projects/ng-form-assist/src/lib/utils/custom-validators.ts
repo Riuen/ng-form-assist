@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 
 /*
   A class to store custom reusable form validation functions.
@@ -18,7 +18,7 @@ export class CustomValidators {
 
         return (enteredDate > currentDate.getTime())
           ? null
-          : { validateDateGreaterThanNow: { valid: false } };
+          : { validateDateGreaterThanNow: true };
       }
       return null;
     };
@@ -36,7 +36,7 @@ export class CustomValidators {
 
         return (enteredDate < currentDate.getTime())
           ? null
-          : { validateDateLessThanNow: { valid: false } };
+          : { validateDateLessThanNow: true };
       }
       return null;
     };
@@ -52,7 +52,7 @@ export class CustomValidators {
       if (passwordCtrl && confirmPasswordCtrl) {
 
         if (passwordCtrl.value !== confirmPasswordCtrl.value) {
-          confirmPasswordCtrl.setErrors({ validatePasswordMatch: { valid: false } });
+          confirmPasswordCtrl.setErrors({ validatePasswordMatch: true });
           return null;
         }
         else {
@@ -64,37 +64,34 @@ export class CustomValidators {
     // return null;
   }
 
-  public static validatePasswordComplexity() {
+  public static validatePasswordComplexity(fieldCtrl: AbstractControl) {
 
-    return (fieldCtrl: AbstractControl) => {
+    const password = fieldCtrl.value as string;
 
-      const password = fieldCtrl.value as string;
+    if (password) {
 
-      if (password) {
-
-        // Password contains atleast 1 lowercase
-        if (!password.match(/^.*[a-z].*$/)) {
-          return { validatePasswordComplexity_Lowercase: { valid: false } };
-        }
-
-        // Password contains atleast 1 uppercase
-        if (!password.match(/^.*[A-Z].*$/)) {
-          return { validatePasswordComplexity_Uppercase: { valid: false } };
-        }
-
-        // Password contains atleast 1 number
-        if (!password.match(/^.*\d.*$/)) {
-          return { validatePasswordComplexity_Numeric: { valid: false } };
-        }
-
-        // Password contains atleast 1 special character
-        if (!password.match(/^.*\W.*$/)) {
-          return { validatePasswordComplexity_Special: { valid: false } };
-        }
+      // Password contains atleast 1 lowercase
+      if (!password.match(/^.*[a-z].*$/)) {
+        return { validatePasswordComplexity_Lowercase: true };
       }
 
-      return null;
-    };
+      // Password contains atleast 1 uppercase
+      if (!password.match(/^.*[A-Z].*$/)) {
+        return { validatePasswordComplexity_Uppercase: true };
+      }
+
+      // Password contains atleast 1 number
+      if (!password.match(/^.*\d.*$/)) {
+        return { validatePasswordComplexity_Numeric: true };
+      }
+
+      // Password contains atleast 1 special character
+      if (!password.match(/^.*\W.*$/)) {
+        return { validatePasswordComplexity_Special: true };
+      }
+    }
+
+    return null;
   }
 
   public static validateCustomPattern(pattern: string) {
@@ -108,8 +105,7 @@ export class CustomValidators {
       return (fc.value as string).match(pattern)
         ? null
         : {
-          validateCustomPattern: 'Login name may only begin with a lowercase letter and can only contain: Letters, \
-            numbers, hypens, periods and underscore'};
+          validateCustomPattern: { valid: false}};
     };
   }
 }
