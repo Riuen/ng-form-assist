@@ -78,7 +78,6 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   @HostListener('blur') onBlur() {
 
     if (this.trim) {
-      console.log('status change');
       this.formatInput();
     }
   }
@@ -107,7 +106,6 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
     if (input) {
 
-      console.log('formatting string');
       input = (input.length > 0)
         ? input.trim()
         : null;
