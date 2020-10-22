@@ -1,5 +1,7 @@
-import { ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { NgControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
 
@@ -15,75 +17,70 @@ import { extractMessage } from '../utils/error-message-formatter';
 
 @Directive({
   // tslint:disable-next-line: directive-selector
-  selector: '[smartField]'
+  selector: '[smartField]',
 })
-export class SmartFieldDirective implements OnInit {
+export class SmartFieldDirective implements OnInit, OnDestroy {
 
-  private isInvalid: boolean;
+  @HostBinding('class.is-invalid') isInvalid: boolean;
 
-  @HostBinding('class.is-invalid') get inValid() {
-    return this.isInvalid && this.control.touched;
-  }
-
-  @Input()
-  set errorDetails(value) {
-
-   /*  if (value) {
-      this.createErrorComponent();
-    } */
-  }
+  @Input() public trim = true;
 
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
+  private eventSubscription: Subscription;
 
   constructor(
-    private control: NgControl,
+    private fieldControl: NgControl,
     private target: ViewContainerRef,
     private componentFactoryResolver: ComponentFactoryResolver) {
   }
 
 
   ngOnInit(): void {
+
+    let errorMessage = null;
     this.createErrorComponent();
-    this.isInvalid = this.control.invalid;
+    this.eventSubscription = this.fieldControl.control.statusChanges
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+
+        errorMessage = this.getErrorMessage();
+        this.componentRef.instance.errorMessage = errorMessage;
+        this.fieldControl.control.markAsTouched();
+        this.isInvalid = (errorMessage !== null);
+      });
   }
 
-
-  @HostListener('keydown') onValueChange() {
-    this.formatInput();
-    const errorMsg = this.getErrorMessage();
-    this.isInvalid = (errorMsg && this.control.touched);
-    this.componentRef.instance.errorMessage = errorMsg;
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
   }
 
-  private createErrorComponent() {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
-    this.componentRef = this.target.createComponent(componentFactory);
-    this.componentRef.instance.errorMessage = this.getErrorMessage();
-    this.componentRef.instance.fieldControl = this.control;
-  }
-
-  private getErrorMessage() {
+  private getErrorMessage(): string {
 
     let message = null;
 
-    if (this.control.errors) {
+    if (this.fieldControl.errors) {
 
-      console.log(Object.keys(this.control.errors));
-      const errorName = Object.keys(this.control.errors)[0];
+      const errorName = Object.keys(this.fieldControl.errors)[0];
 
       if (this.errorRepo.has(errorName)) {
         message = this.errorRepo.get(errorName);
-        console.log('retrieving error emssage from cache');
       }
       else {
-        console.log('building error message');
-        message = extractMessage(errorName, this.control.errors[errorName]);
+        message = extractMessage(errorName, this.fieldControl.errors[errorName]);
         this.errorRepo.set(errorName, message);
       }
     }
 
     return message;
+  }
+
+  @HostListener('blur') onBlur() {
+
+    if (this.trim) {
+      console.log('status change');
+      this.formatInput();
+    }
   }
 
 
@@ -92,10 +89,17 @@ export class SmartFieldDirective implements OnInit {
     return ((typeof value) === 'string');
   }
 
+  private createErrorComponent(): void {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
+    this.componentRef = this.target.createComponent(componentFactory);
+    this.componentRef.instance.errorMessage = this.getErrorMessage();
+    this.componentRef.instance.fieldControl = this.fieldControl;
+  }
+
   /* Trims leading and trailing spaces, sets empty string to null */
   private formatInput() {
 
-    let input = this.control.value;
+    let input = this.fieldControl.value;
 
     if (!this.isString(input)) {
       return;
@@ -103,11 +107,12 @@ export class SmartFieldDirective implements OnInit {
 
     if (input) {
 
+      console.log('formatting string');
       input = (input.length > 0)
         ? input.trim()
         : null;
 
-      this.control.control.setValue(input);
+      this.fieldControl.control.setValue(input);
     }
   }
 }

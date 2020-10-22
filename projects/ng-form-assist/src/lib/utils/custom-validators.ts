@@ -18,7 +18,7 @@ export class CustomValidators {
 
         return (enteredDate > currentDate.getTime())
           ? null
-          : { validateDateGreaterThanNow: { valid: false } };
+          : { validateDateGreaterThanNow: true };
       }
       return null;
     };
@@ -36,7 +36,7 @@ export class CustomValidators {
 
         return (enteredDate < currentDate.getTime())
           ? null
-          : { validateDateLessThanNow: { valid: false } };
+          : { validateDateLessThanNow: true };
       }
       return null;
     };
@@ -49,14 +49,17 @@ export class CustomValidators {
       const passwordCtrl = fg.get(passwordField);
       const confirmPasswordCtrl = fg.get(confirmPasswordField);
 
-      if (passwordCtrl && confirmPasswordCtrl) {
+      if (passwordCtrl?.value && confirmPasswordCtrl?.value) {
 
         if (passwordCtrl.value !== confirmPasswordCtrl.value) {
-          confirmPasswordCtrl.setErrors({ validatePasswordMatch: { valid: false } });
+          this.addErrors({ validatePasswordMatch: true }, passwordCtrl);
+          this.addErrors({ validatePasswordMatch: true }, confirmPasswordCtrl);
           return null;
         }
         else {
-          confirmPasswordCtrl.setErrors(null);
+          this.removeErrors(['validatePasswordMatch'], passwordCtrl);
+          this.removeErrors(['validatePasswordMatch'], confirmPasswordCtrl);
+          return null;
         }
       }
     };
@@ -64,37 +67,44 @@ export class CustomValidators {
     // return null;
   }
 
-  public static validatePasswordComplexity() {
+  public static validatePasswordComplexity(fieldCtrl: AbstractControl) {
 
-    return (fieldCtrl: AbstractControl) => {
+    const password = fieldCtrl.value as string;
 
-      const password = fieldCtrl.value as string;
+    if (password) {
 
-      if (password) {
-
-        // Password contains atleast 1 lowercase
-        if (!password.match(/^.*[a-z].*$/)) {
-          return { validatePasswordComplexity_Lowercase: { valid: false } };
-        }
-
-        // Password contains atleast 1 uppercase
-        if (!password.match(/^.*[A-Z].*$/)) {
-          return { validatePasswordComplexity_Uppercase: { valid: false } };
-        }
-
-        // Password contains atleast 1 number
-        if (!password.match(/^.*\d.*$/)) {
-          return { validatePasswordComplexity_Numeric: { valid: false } };
-        }
-
-        // Password contains atleast 1 special character
-        if (!password.match(/^.*\W.*$/)) {
-          return { validatePasswordComplexity_Special: { valid: false } };
-        }
+      // Password contains atleast 1 lowercase
+      if (!password.match(/^.*[a-z].*$/)) {
+        return { validatePasswordComplexity_Lowercase: true };
       }
 
-      return null;
-    };
+      // Password contains atleast 1 uppercase
+      if (!password.match(/^.*[A-Z].*$/)) {
+        return { validatePasswordComplexity_Uppercase: true };
+      }
+
+      // Password contains atleast 1 number
+      if (!password.match(/^.*\d.*$/)) {
+        return { validatePasswordComplexity_Numeric: true };
+      }
+
+      // Password contains atleast 1 special character
+      if (!password.match(/^.*(\W|_).*$/)) {
+        return { validatePasswordComplexity_Special: true };
+      }
+    }
+
+    return null;
+  }
+
+  public static validateUsername(fc: AbstractControl) {
+
+    if (fc.value) {
+
+      return (fc.value as string).match(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._-]+(?<![_.])$/)
+        ? null
+        : { validateUsername: { valid: false } };
+    }
   }
 
   public static validateCustomPattern(pattern: string) {
@@ -108,8 +118,33 @@ export class CustomValidators {
       return (fc.value as string).match(pattern)
         ? null
         : {
-          validateCustomPattern: 'Login name may only begin with a lowercase letter and can only contain: Letters, \
-            numbers, hypens, periods and underscore'};
+          validateCustomPattern: { valid: false }
+        };
     };
+  }
+
+  private static removeErrors(keys: string[], control: AbstractControl) {
+    if (!control || !keys || keys.length === 0) {
+      return;
+    }
+
+    const remainingErrors = keys.reduce((errors, key) => {
+      delete errors[key];
+      return errors;
+    }, { ...control.errors });
+
+    control.setErrors(remainingErrors);
+
+    if (Object.keys(control.errors || {}).length === 0) {
+      control.setErrors(null);
+    }
+  }
+
+  private static addErrors(errors: { [key: string]: any }, control: AbstractControl) {
+    if (!control || !errors) {
+      return;
+    }
+
+    control.setErrors({ ...control.errors, ...errors });
   }
 }
