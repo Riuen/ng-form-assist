@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { NgControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
-import { debounceTime, distinctUntilChanged, filter, find, map, skipUntil, tap } from 'rxjs/operators';
 
 /**
  * This directive was created as a utility to handle the following:
@@ -16,137 +17,70 @@ import { debounceTime, distinctUntilChanged, filter, find, map, skipUntil, tap }
 
 @Directive({
   // tslint:disable-next-line: directive-selector
-  selector: '[smartField]'
+  selector: '[smartField]',
 })
-export class SmartFieldDirective implements OnInit {
+export class SmartFieldDirective implements OnInit, OnDestroy {
 
-  // private ;
+  @HostBinding('class.is-invalid') isInvalid: boolean;
 
-    @HostBinding('class.is-invalid') get inValid() {
-      return this.fieldControl.invalid && this.fieldControl.touched;
-    }
-
-  // @HostBinding('class.is-invalid') isInvalid: boolean;
-  @Input()
-  set errorDetails(value) {
-
-    /*  if (value) {
-       this.createErrorComponent();
-     } */
-  }
+  @Input() public trim = true;
 
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
+  private eventSubscription: Subscription;
 
   constructor(
     private fieldControl: NgControl,
     private target: ViewContainerRef,
-    private cdr: ChangeDetectorRef,
     private componentFactoryResolver: ComponentFactoryResolver) {
   }
 
 
   ngOnInit(): void {
+
+    let errorMessage = null;
     this.createErrorComponent();
-    // this.isInvalid = false;
-
-    // let previous = null;
-    // let errorMessage = null;
-    /*  this.fieldControl.valueChanges.subscribe(value => {
- 
-       if (value !== previous) {
-         console.log(`input changed from |${previous}| to |${value}|`);
-         // this.formatInput();
-         errorMessage = this.getErrorMessage();
-         this.componentRef.instance.errorMessage = errorMessage;
-         this.isInvalid = (errorMessage !== null);
-         // this.fieldControl.control.updateValueAndValidity();
-         // this.cdr.detectChanges();
-         previous = value;
-       }
-     }); */
-
-    /* this.fieldControl.control.valueChanges
-      .pipe(debounceTime(500))
-      .pipe(distinctUntilChanged())
+    this.eventSubscription = this.fieldControl.control.statusChanges
+      .pipe(debounceTime(300))
       .subscribe(() => {
-        const errorMessage = this.getErrorMessage();
-        console.log('error: ' + errorMessage);
+
+        errorMessage = this.getErrorMessage();
         this.componentRef.instance.errorMessage = errorMessage;
-        // this.isInvalid = (errorMessage !== null);
-      }); */
-
-    this.fieldControl.control.statusChanges
-      // .pipe(filter(status => status === 'VALID'))
-      .pipe(debounceTime(500))
-      // .pipe(distinctUntilChanged())
-      .subscribe((e) => {
-        console.log(this.fieldControl.name);
-        console.log('status updated to ' + e);
-
-        if (e === 'VALID') {
-          this.componentRef.instance.errorMessage = null;
-        }
-        else {
-          this.fieldControl.control.markAsTouched();
-          this.componentRef.instance.errorMessage = this.getErrorMessage();
-        }
-        // this.isInvalid = false;
+        this.fieldControl.control.markAsTouched();
+        this.isInvalid = (errorMessage !== null);
       });
   }
 
+  ngOnDestroy(): void {
+    this.eventSubscription.unsubscribe();
+  }
 
-
-  /*     ngOnChanges(changes: SimpleChanges){
-        if(changes.input){
-          console.log('input changed');
-          console.log('keypress')
-          console.log(this.fieldControl.control.errors);
-          console.log(this.fieldControl.errors);
-          const errorMessage = this.getErrorMessage();
-          this.componentRef.instance.errorMessage = errorMessage;
-          this.isInvalid = (errorMessage !== null);
-        }
-      } */
-
-
-
-  /* @HostListener('keypress') onValueChange() {
-    console.log('input changed');
-    console.log('change')
-    console.log(this.fieldControl.control.errors);
-    console.log(this.fieldControl.errors);
-  } */
-
-  private getErrorMessage() {
+  private getErrorMessage(): string {
 
     let message = null;
-    const fieldErrors = this.fieldControl.errors || this.fieldControl.control.errors;
 
-    console.log('control errors');
-    console.log(fieldErrors);
-    console.log(this.fieldControl.control.errors);
-    console.log('------');
+    if (this.fieldControl.errors) {
 
-    if (fieldErrors) {
-
-      console.log(Object.keys(fieldErrors));
-      const errorName = Object.keys(fieldErrors)[0];
+      const errorName = Object.keys(this.fieldControl.errors)[0];
 
       if (this.errorRepo.has(errorName)) {
         message = this.errorRepo.get(errorName);
-        console.log('retrieving error emssage from cache: ' + errorName);
-        console.log('message retrieved: ' + message);
       }
       else {
-        console.log('building error message for error: ' + errorName);
         message = extractMessage(errorName, this.fieldControl.errors[errorName]);
-        console.log('message built: ' + message);
         this.errorRepo.set(errorName, message);
       }
     }
 
     return message;
+  }
+
+  @HostListener('blur') onBlur() {
+
+    if (this.trim) {
+      console.log('status change');
+      this.formatInput();
+    }
   }
 
 
@@ -155,7 +89,7 @@ export class SmartFieldDirective implements OnInit {
     return ((typeof value) === 'string');
   }
 
-  private createErrorComponent() {
+  private createErrorComponent(): void {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
     this.componentRef = this.target.createComponent(componentFactory);
     this.componentRef.instance.errorMessage = this.getErrorMessage();
@@ -173,6 +107,7 @@ export class SmartFieldDirective implements OnInit {
 
     if (input) {
 
+      console.log('formatting string');
       input = (input.length > 0)
         ? input.trim()
         : null;

@@ -97,13 +97,13 @@ export class CustomValidators {
     return null;
   }
 
-  public static validateLoginName(fc: AbstractControl) {
+  public static validateUsername(fc: AbstractControl) {
 
     if (fc.value) {
 
       return (fc.value as string).match(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._-]+(?<![_.])$/)
         ? null
-        : { validateLoginName: { valid: false } };
+        : { validateUsername: { valid: false } };
     }
   }
 
@@ -147,33 +147,4 @@ export class CustomValidators {
 
     control.setErrors({ ...control.errors, ...errors });
   }
-
- /*  private static appendError(fc: AbstractControl, error: any): void {
-    let fieldErrors = fc.errors;
-
-    if (fieldErrors) {
-      Object.assign(fieldErrors, error);
-    }
-    else {
-      fieldErrors = error;
-    }
-
-    fc.setErrors(fieldErrors);
-  }
-
-  private static removeError(fc: AbstractControl, errorKey: string): void {
-
-    let result = null;
-
-    if (fc.errors) {
-      const fieldErrors = fc.errors;
-      delete fieldErrors[errorKey];
-      result = Object.keys(fieldErrors).length > 0 ? fieldErrors : null;
-    }
-    else {
-      fc.markAsPristine();
-    }
-
-    fc.setErrors(result);
-  } */
 }
