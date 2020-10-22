@@ -12,7 +12,7 @@ import { NgControl } from '@angular/forms';
 @Component({
     selector: 'lib-field-error-view',
     template: `
-        <p *ngIf="errorMessage && fieldControl.touched" class="text-danger">
+        <p *ngIf="fieldControl.touched" class="text-danger">
             {{ errorMessage }}
         </p>
     `,
