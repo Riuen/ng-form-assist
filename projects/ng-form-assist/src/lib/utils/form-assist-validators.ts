@@ -4,9 +4,9 @@ import { AbstractControl, FormGroup } from '@angular/forms';
   A class to store custom reusable form validation functions.
 */
 
-export class CustomValidators {
+export class FormAssistValidators {
 
-  public static validateDateGreaterThanNow() {
+  public static dateGreaterThanNow() {
 
     return (fc: AbstractControl) => {
 
@@ -18,13 +18,13 @@ export class CustomValidators {
 
         return (enteredDate > currentDate.getTime())
           ? null
-          : { validateDateGreaterThanNow: true };
+          : { dateLessThanNow: true };
       }
       return null;
     };
   }
 
-  public static validateDateLessThanNow() {
+  public static dateLessThanNow() {
 
     return (fc: AbstractControl) => {
 
@@ -36,13 +36,13 @@ export class CustomValidators {
 
         return (enteredDate < currentDate.getTime())
           ? null
-          : { validateDateLessThanNow: true };
+          : { dateLessThanNow: true };
       }
       return null;
     };
   }
 
-  public static validatePasswordMatch(passwordField: string, confirmPasswordField: string) {
+  public static passwordMatch(passwordField: string, confirmPasswordField: string) {
 
     return (fg: FormGroup) => {
 
@@ -52,13 +52,13 @@ export class CustomValidators {
       if (passwordCtrl?.value && confirmPasswordCtrl?.value) {
 
         if (passwordCtrl.value !== confirmPasswordCtrl.value) {
-          this.addErrors({ validatePasswordMatch: true }, passwordCtrl);
-          this.addErrors({ validatePasswordMatch: true }, confirmPasswordCtrl);
+          this.addErrors({ passwordMatch: true }, passwordCtrl);
+          this.addErrors({ passwordMatch: true }, confirmPasswordCtrl);
           return null;
         }
         else {
-          this.removeErrors(['validatePasswordMatch'], passwordCtrl);
-          this.removeErrors(['validatePasswordMatch'], confirmPasswordCtrl);
+          this.removeErrors(['passwordMatch'], passwordCtrl);
+          this.removeErrors(['passwordMatch'], confirmPasswordCtrl);
           return null;
         }
       }
@@ -67,7 +67,7 @@ export class CustomValidators {
     // return null;
   }
 
-  public static validatePasswordComplexity(fieldCtrl: AbstractControl) {
+  public static passwordComplexity(fieldCtrl: AbstractControl) {
 
     const password = fieldCtrl.value as string;
 
@@ -75,39 +75,39 @@ export class CustomValidators {
 
       // Password contains atleast 1 lowercase
       if (!password.match(/^.*[a-z].*$/)) {
-        return { validatePasswordComplexity_Lowercase: true };
+        return { passwordComplexity_Lowercase: true };
       }
 
       // Password contains atleast 1 uppercase
       if (!password.match(/^.*[A-Z].*$/)) {
-        return { validatePasswordComplexity_Uppercase: true };
+        return { passwordComplexity_Uppercase: true };
       }
 
       // Password contains atleast 1 number
       if (!password.match(/^.*\d.*$/)) {
-        return { validatePasswordComplexity_Numeric: true };
+        return { passwordComplexity_Numeric: true };
       }
 
       // Password contains atleast 1 special character
       if (!password.match(/^.*(\W|_).*$/)) {
-        return { validatePasswordComplexity_Special: true };
+        return { passwordComplexity_Special: true };
       }
     }
 
     return null;
   }
 
-  public static validateUsername(fc: AbstractControl) {
+  public static username(fc: AbstractControl) {
 
     if (fc.value) {
 
       return (fc.value as string).match(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._-]+(?<![_.])$/)
         ? null
-        : { validateUsername: { valid: false } };
+        : { username: { valid: false } };
     }
   }
 
-  public static validateCustomPattern(pattern: string) {
+  public static pattern(pattern: string) {
 
     return (fc: AbstractControl) => {
 
@@ -118,7 +118,7 @@ export class CustomValidators {
       return (fc.value as string).match(pattern)
         ? null
         : {
-          validateCustomPattern: { valid: false }
+          username: { valid: false }
         };
     };
   }
