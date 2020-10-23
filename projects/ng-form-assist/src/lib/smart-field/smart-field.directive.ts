@@ -17,17 +17,20 @@ import { extractMessage } from '../utils/error-message-formatter';
 
 @Directive({
   // tslint:disable-next-line: directive-selector
-  selector: '[smartField]',
+  selector: '[smartFormField]',
 })
 export class SmartFieldDirective implements OnInit, OnDestroy {
-
-  @HostBinding('class.is-invalid') isInvalid: boolean;
 
   @Input() public trim = true;
 
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
   private eventSubscription: Subscription;
+
+  @HostBinding('class.is-invalid')
+  public get isInvalid() {
+    return this.fieldControl.invalid && this.fieldControl.touched;
+  }
 
   constructor(
     private fieldControl: NgControl,
@@ -38,16 +41,13 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    let errorMessage = null;
     this.createErrorComponent();
     this.eventSubscription = this.fieldControl.control.statusChanges
       .pipe(debounceTime(300))
       .subscribe(() => {
 
-        errorMessage = this.getErrorMessage();
-        this.componentRef.instance.errorMessage = errorMessage;
+        this.componentRef.instance.errorMessage = this.getErrorMessage();
         this.fieldControl.control.markAsTouched();
-        this.isInvalid = (errorMessage !== null);
       });
   }
 
@@ -55,6 +55,17 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     this.eventSubscription.unsubscribe();
   }
 
+
+  @HostListener('blur')
+  public onBlur() {
+
+    if (this.trim) {
+      this.formatInput();
+    }
+  }
+
+
+  // Utils
   private getErrorMessage(): string {
 
     let message = null;
@@ -75,19 +86,10 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     return message;
   }
 
-  @HostListener('blur') onBlur() {
-
-    if (this.trim) {
-      this.formatInput();
-    }
-  }
-
-
-  // Utils
-  private isString(value: any): boolean {
-    return ((typeof value) === 'string');
-  }
-
+  /*
+    Creates the component that displays the error message. The component will be
+    inject directly below the host.
+  */
   private createErrorComponent(): void {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(FieldErrorViewComponent);
     this.componentRef = this.target.createComponent(componentFactory);
@@ -112,5 +114,9 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
       this.fieldControl.control.setValue(input);
     }
+  }
+
+  private isString(value: any): boolean {
+    return ((typeof value) === 'string');
   }
 }
