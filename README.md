@@ -5,14 +5,14 @@
 <br/>
 
 ## Basic Overview
-This project is intended to add some utilities to forms created in angular, be it reactive or template driven. This project current provides two main utilities:
+This project is intended to add some utilities to reactive forms created in angular. This project current provides two main utilities:
 1. A directive to handle basic tasks (smartFormField)
 2. Additional validators.
 
-> __Note:__ At this time, the css class which is applied to form fields in an error state is `is-invalid` which is a bootstrap class. This means that this library is best suited for forms styled with bootstrap at this time. I will working to remove this limitation to allow more customizable styling options in a later update!
+> __Note:__ At this time, the css class which is applied to form fields in an error state is `is-invalid`, which is a bootstrap class. This means that this library is best suited for forms styled with bootstrap at this time. I will be working to remove this limitation and allow more customizable styling options in a later update!
 
 ### Smart Field Directive (smartFormField)
-This directive essentially makes the field it is bound to aware of the validators registered to it, as such this directive automatically handles the following tasks:
+This directive essentially makes the field it is bound to aware of the validators registered to it, that being said, this directive automatically handles the following tasks:
 1. Changing the css class of the field to reflect if an error is present.
 2. Displaying of error messages under fields when a validation rule is violated.
 3. Triming of values if the input is of type `string`. (This can be disabled)
@@ -41,7 +41,7 @@ import { NgFormAssistModule } from 'ng-form-assist';
 export class AppModule { }
 ```
 
-Then simply attach the `smartFormField` directive to any reactive form field.
+Then simply attach the `smartFormField` directive to any reactive form field. See [here](#basic-example) for an example.
 
 <br/>
 
@@ -242,6 +242,7 @@ At this stage we are essentially finished with our form. Once a validation rule 
 ## Vision / TODO
 * Add more comprehensive documentation and examples.
 * Add more validators.
+* Add support for user defined validators.
 * Refactor to allow the following to be configurable by the user:
     * Password complexity rules.
     * The css class that must be applied to the field on error.
