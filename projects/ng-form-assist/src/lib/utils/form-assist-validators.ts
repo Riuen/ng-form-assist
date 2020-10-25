@@ -110,6 +110,22 @@ export class FormAssistValidators {
   }
 
   /**
+   * Validator that requires the control's value pass an email validation test.
+   * @param message The error message to be displayed.
+   */
+  public static email(message: string): ValidatorFn {
+
+    return (control: AbstractControl) => {
+
+      const error = Validators.email(control);
+
+      return (error)
+        ? { _email: message || 'Invalid email.' }
+        : null;
+    };
+  }
+
+  /**
    * Validator that requires that the control value for both fields specified are equal.
    * Typically used to confirm if password fields match.
    * Note: Both fields must be of the same data type for accurate matching.

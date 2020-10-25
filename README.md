@@ -4,12 +4,29 @@
 
 <br/>
 
+## Table Of Contents
+- [Basic Overview](#basic-overview)
+- [Basic Usage](#basic-usage)
+    - [Example Implementation](#basic-example)
+- [Customization](#customization)
+    - [Enable/Disable Error Messages](#disable-error-messages)
+    - [Enable/Disable CSS class change](#disable-css-class-change)
+    - [Apply custom error message styling](#custom-error-message-class)
+    - [Apply custom class to form field on error](#custom-error-form-class)
+- [Angular Validator Support](#angular-validator-support)
+- [Form Assist Validators](#form-assist-validators)
+
+<br/><br/>
+
+> __Note:__ At this time, the css class which is applied to form fields in an error state is `is-invalid`, which is a bootstrap class. This means that this library is best suited for forms styled with bootstrap at this time. I will be working to remove this limitation and allow more customizable styling options in a later update!
+
+<br/><br/>
+
 ## Basic Overview
 This project is intended to add some utilities to reactive forms created in angular. This project current provides two main utilities:
 1. A directive to handle basic tasks (smartFormField)
 2. Additional validators.
 
-> __Note:__ At this time, the css class which is applied to form fields in an error state is `is-invalid`, which is a bootstrap class. This means that this library is best suited for forms styled with bootstrap at this time. I will be working to remove this limitation and allow more customizable styling options in a later update!
 
 ### Smart Field Directive (smartFormField)
 This directive essentially makes the field it is bound to aware of the validators registered to it, that being said, this directive automatically handles the following tasks:
@@ -19,6 +36,7 @@ This directive essentially makes the field it is bound to aware of the validator
 4. If a field contains empty string, the value will be converted to null. (This can be disabled)
 
 <br/>
+
 
 ## Basic Usage
 Import the `FormAssistModule` into the module where you wish to use it.
@@ -45,9 +63,9 @@ Then simply attach the `smartFormField` directive to any reactive form field. Se
 
 <br/>
 
-## Builtin Angular Validator Support
-This library supports the use of the validators offered by angular. A default validation message will be automatically displayed for see. See `Custom Validators and Messages` 
-to see how to customize them! Below are the default messages that will be displayed for each default angular validator
+## Angular Validator Support
+This library supports the use of the validators offered out of the box by angular. A default validation message will be automatically displayed for see. See [Form Assist Validators](#form-vssist-validators) 
+to see how to customize them! Below are the default messages that will be displayed for each default angular validator:
 
 
 | Validator | Default Message |
@@ -62,29 +80,36 @@ to see how to customize them! Below are the default messages that will be displa
 
 <br/>
 
-## Disable Error Messages
+## Customization
+<hr/>
+
+###  Disable Error Messages
 The feature to prevent error messages from being displayed is coming soon!
 
-<br/>
-
-## Disable CSS class change
+### Disable CSS class change
 The feature to disable the changing of the css class when an error occurs is coming soon!
+
+### Custom error form class
+This feature will allow you to specify your own styling class that must be applied to the form field on error. Coming soon.
+
+### Custom error message class
+This feature will allow you to specify your own styling class that must be applied to the form error message. The form error message is currently displayed within a paragraph `<p>` tag.
 
 <br/>
 
 ## Form Assist Validators
+<hr/>
 This library exports a number of additional validators that you can import and use in your form group. When
 you use the Validators provided by this library, you will be able to supply the error message that
-should be displayed. The built in angular validators have been wrapped and is included in this class, using
-these instead of the builtin angular validators will allow you to provide your own error messages (under the hood they implement the same logic).
+should be displayed. The built-in angular validators have been wrapped and is included in this class, using
+these instead of the built-in angular validators will allow you to provide your own error messages (under the hood they implement the same logic).
 
-### Usage
-The custom validators are in a class called `FormAssistValidators`.
+<br/><br/>
 
 ### Validators
-Below are all the validators included in `FormAssistValidators`:
+The custom validators are in a class called `FormAssistValidators`. Below are all the validators that are included:
 
-### `fieldMatch`
+#### `fieldMatch`
 Validator that requires that the input for both fields specified are equal. The error message appear under the two fields specified.
 Eg use-case: Validating that passwords match.\
 __This validator must be added at the form group level.__\
@@ -99,7 +124,7 @@ __This validator must be added at the form group level.__\
 
 <br/><hr/>
 
-### `passwordComplexity`
+#### `passwordComplexity`
 Validator that requires the control's value to contain atleast 1 lowercase, uppercase,
 digit and special character.\
 - Default Message: *Password must contain atleast 1 lowercase, uppercase, digit and a special character.*
@@ -111,7 +136,7 @@ digit and special character.\
 
 <br/><hr/>
 
-### `dateAfter`
+#### `dateAfter`
 Date validator which validates that the input is a date that occurs after the date specified.\
 Note: For best results ensure that the field input value is of type `Date` or a date `string`.
 - Default Message: *Date entered must be greater than `${FORMATTED_DATE}`.*
@@ -123,7 +148,7 @@ Note: For best results ensure that the field input value is of type `Date` or a 
 
 <br/><hr/>
 
-### `dateBefore`
+#### `dateBefore`
 Date validator which validates that the input is a date that occurs before the date specified.\
 Note: For best results ensure that the field input value is of type `Date` or a date `string`.
 - Default Message: *Date entered must be greater than `${FORMATTED_DATE}`.*
@@ -135,7 +160,7 @@ Note: For best results ensure that the field input value is of type `Date` or a 
 
 <br/><hr/>
 
-### `required`
+#### `required`
 Validate that the field is non empty.
 * Default Message: *This field is required.*
 
@@ -147,7 +172,7 @@ Validate that the field is non empty.
 
 <br/><hr/>
 
-### `min`
+#### `min`
 Validator that requires the input to be greater than or equal to the provided number.
 - Default Message: *Value must be greater than or equal to `${MIN_VAL}`.*
 
@@ -158,7 +183,7 @@ Validator that requires the input to be greater than or equal to the provided nu
 
 <br/><hr/>
 
-### `max`
+#### `max`
 Validator that requires the input to be less than or equal to the provided number.
 - Default Message: *Value must be less than or equal to `${MAX_VAL}`.*
 
@@ -169,7 +194,7 @@ Validator that requires the input to be less than or equal to the provided numbe
 
 <br/><hr/>
 
-### `maxLength`
+#### `maxLength`
 Validator that requires the length of the input be less than or equal to the provided number.
 - Default Message: *Value entered must be less than or equal to `${MAX_LENGTH}` characters.*
 
@@ -180,7 +205,7 @@ Validator that requires the length of the input be less than or equal to the pro
 
 <br/><hr/>
 
-### `minLength`
+#### `minLength`
 Validator that requires the length of the input be greater than or equal to the provided number.
 - Default Message: *Value entered must be less than or equal to `${MIN_LENGTH}` characters.*
 
@@ -191,7 +216,7 @@ Validator that requires the length of the input be greater than or equal to the 
 
 <br/><hr/>
 
-### `pattern`
+#### `pattern`
 Validator that requires the length of the input be greater than or equal to the provided number.
 - Default Message: *Invalid input.*
 
@@ -202,7 +227,7 @@ Validator that requires the length of the input be greater than or equal to the 
 
 <br/><hr/>
 
-### `email`
+#### `email`
 Email validator
 - Default Message: *Invalid email.*
 
