@@ -9,6 +9,7 @@
 - [Basic Usage](#basic-usage)
     - [Example Implementation](#basic-example)
 - [Customization](#customization)
+    - [Enable/Disable Trim](#enable/disable-trim)
     - [Enable/Disable Error Messages](#disable-error-messages)
     - [Enable/Disable CSS class change](#disable-css-class-change)
     - [Apply custom error message styling](#custom-error-message-class)
@@ -64,7 +65,7 @@ Then simply attach the `smartFormField` directive to any reactive form field. Se
 <br/>
 
 ## Angular Validator Support
-This library supports the use of the validators offered out of the box by angular. A default validation message will be automatically displayed for see. See [Form Assist Validators](#form-vssist-validators) 
+This library supports the use of the validators offered out of the box by angular. A default validation message will be automatically displayed for see. See [Form Assist Validators](#form-assist-validators) 
 to see how to customize them! Below are the default messages that will be displayed for each default angular validator:
 
 
@@ -81,7 +82,9 @@ to see how to customize them! Below are the default messages that will be displa
 <br/>
 
 ## Customization
-<hr/>
+
+### Enable / Disable Trim
+The feature to disable/enable trimming of string data fields is coming soon!
 
 ###  Disable Error Messages
 The feature to prevent error messages from being displayed is coming soon!
@@ -98,7 +101,6 @@ This feature will allow you to specify your own styling class that must be appli
 <br/>
 
 ## Form Assist Validators
-<hr/>
 This library exports a number of additional validators that you can import and use in your form group. When
 you use the Validators provided by this library, you will be able to supply the error message that
 should be displayed. The built-in angular validators have been wrapped and is included in this class, using
@@ -260,7 +262,7 @@ const form = new FormGroup({
 </form>
 ```
 
-At this stage we are essentially finished with our form. Once a validation rule has been broken, the css class for invalid form fields will be applied to the field and the error message will be displayed.
+At this stage we are essentially finished with our form. Once a validation rule has been broken: the css class for invalid form fields will be applied to the field, and the error message will be displayed.
 
 <br/><hr/>
 
@@ -277,4 +279,3 @@ At this stage we are essentially finished with our form. Once a validation rule 
     * Apply custom css to the error messages.
 * Add tests.
 * Create an interactive demo.
-* Add table of contents.
