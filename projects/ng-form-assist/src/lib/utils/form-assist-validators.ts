@@ -151,7 +151,7 @@ export class FormAssistValidators {
 
     return (control: AbstractControl) => {
 
-      message = message || 'Password must contain atleast 1 lowercase, uppercase, digit and special character.';
+      message = message || 'Password must contain atleast 1 lowercase, uppercase, digit and a special character.';
       const password = control.value as string;
 
       if (password) {
