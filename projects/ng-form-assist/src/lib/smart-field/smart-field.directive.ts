@@ -11,8 +11,7 @@ import { extractMessage } from '../utils/error-message-formatter';
  * 2) If the data type of the host is a 'string', then the value will be modified as follows:
  *    - Non empty strings will be trimmed.
  *    - Empty strings will be converted to null.
- * 3) If an error details object is provided then the FormFieldErrors component will be rendered in
- *      order to handle displaying the the appropriate error messages.
+ * 3) Inject a component below the host that will display validation messages when they occur.
  */
 
 @Directive({
