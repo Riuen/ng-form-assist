@@ -65,7 +65,7 @@ Then simply attach the `smartFormField` directive to any reactive form field. Se
 <br/>
 
 ## Angular Validator Support
-This library supports the use of the validators offered out of the box by angular. A default validation message will be automatically displayed for see. See [Form Assist Validators](#form-assist-validators) 
+This library supports the use of the validators offered out of the box by angular. A default validation message will be automatically displayed. See [Form Assist Validators](#form-assist-validators) 
 to see how to customize them! Below are the default messages that will be displayed for each default angular validator:
 
 
@@ -258,7 +258,7 @@ const form = new FormGroup({
 ```
 <form [formGroup]="form">
     <input type="text" formControlName="firstName" class="form-control" smartFormField />
-    <input type="text" formControlName="firstName" class="form-control" smartFormField />
+    <input type="text" formControlName="lastName" class="form-control" smartFormField />
 </form>
 ```
 
