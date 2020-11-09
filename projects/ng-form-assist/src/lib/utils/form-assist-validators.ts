@@ -8,7 +8,7 @@ export class FormAssistValidators {
    */
   public static required(message: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const result = Validators.required(control);
 
@@ -16,6 +16,8 @@ export class FormAssistValidators {
         ? { _required: message || 'This field is required' }
         : null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -25,7 +27,7 @@ export class FormAssistValidators {
    */
   public static min(value: number, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const fn = Validators.min(value);
       const error = fn(control);
@@ -34,6 +36,8 @@ export class FormAssistValidators {
         ? { _min: message || `Value must be greater than or equal to ${error.min.min}.` }
         : null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -43,7 +47,7 @@ export class FormAssistValidators {
    */
   public static max(value: number, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const fn = Validators.max(value);
       const error = fn(control);
@@ -52,6 +56,8 @@ export class FormAssistValidators {
         ? { _max: message || `Value must be less than or equal to ${error.max.max}.` }
         : null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -61,7 +67,7 @@ export class FormAssistValidators {
    */
   public static maxLength(value: number, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const fn = Validators.maxLength(value);
       const error = fn(control);
@@ -70,6 +76,8 @@ export class FormAssistValidators {
         ? { _maxlength: message || `Value entered must be less than or equal to ${error.maxlength.requiredLength} characters.` }
         : null;
     };
+
+    return validatorFn;
   }
 
 
@@ -80,7 +88,7 @@ export class FormAssistValidators {
    */
   public static minLength(value: number, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const fn = Validators.minLength(value);
       const error = fn(control);
@@ -89,6 +97,8 @@ export class FormAssistValidators {
         ? { _minlength: message || `Value entered must be greater than or equal to ${error.minlength.requiredLength} characters.` }
         : null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -98,7 +108,7 @@ export class FormAssistValidators {
    */
   public static pattern(pattern: string | RegExp, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const fn = Validators.pattern(pattern);
       const error = fn(control);
@@ -107,6 +117,8 @@ export class FormAssistValidators {
         ? { _pattern: message || 'Invalid input.' }
         : null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -115,7 +127,7 @@ export class FormAssistValidators {
    */
   public static email(message: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       const error = Validators.email(control);
 
@@ -123,6 +135,8 @@ export class FormAssistValidators {
         ? { _email: message || 'Invalid email.' }
         : null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -135,7 +149,7 @@ export class FormAssistValidators {
    */
   public static fieldMatch(field1: string, field2: string, message?: string): ValidatorFn {
 
-    return (fg: FormGroup) => {
+    const validatorFn = (fg: FormGroup) => {
 
       message = message || `Value for ${field1} does not match ${field2}.`;
 
@@ -156,6 +170,8 @@ export class FormAssistValidators {
         }
       }
     };
+
+    return validatorFn;
   }
 
   /**
@@ -165,7 +181,7 @@ export class FormAssistValidators {
    */
   public static passwordComplexity(message: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       message = message || 'Password must contain atleast 1 lowercase, uppercase, digit and a special character.';
       const password = control.value as string;
@@ -195,6 +211,8 @@ export class FormAssistValidators {
 
       return null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -205,7 +223,7 @@ export class FormAssistValidators {
    */
   public static dateAfter(date: Date | string, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       if (control.value) {
 
@@ -221,6 +239,8 @@ export class FormAssistValidators {
       }
       return null;
     };
+
+    return validatorFn;
   }
 
   /**
@@ -232,7 +252,7 @@ export class FormAssistValidators {
    */
   public static dateBefore(date: Date | string, message?: string): ValidatorFn {
 
-    return (control: AbstractControl) => {
+    const validatorFn = (control: AbstractControl) => {
 
       if (control.value) {
 
@@ -248,6 +268,8 @@ export class FormAssistValidators {
       }
       return null;
     };
+
+    return validatorFn;
   }
 
 
