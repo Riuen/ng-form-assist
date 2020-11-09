@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FieldErrorViewComponent } from './field-error-view/field-error-view.component';
 import { SmartFieldDirective } from './smart-field/smart-field.directive';
+import { SmartFieldConfig } from './utils/smart-field-config';
+import { initSmartFieldConfig } from './utils/utilities';
 
 
 @NgModule({
@@ -14,4 +16,19 @@ import { SmartFieldDirective } from './smart-field/smart-field.directive';
   ],
   exports: [SmartFieldDirective]
 })
-export class NgFormAssistModule { }
+export class NgFormAssistModule {
+  static forRoot(
+    libConfiguration: SmartFieldConfig
+  ): ModuleWithProviders<NgFormAssistModule> {
+    libConfiguration = initSmartFieldConfig(libConfiguration);
+    return {
+      ngModule: NgFormAssistModule,
+      providers: [
+        {
+          provide: SmartFieldConfig,
+          useValue: libConfiguration,
+        },
+      ],
+    };
+  }
+}

@@ -275,9 +275,5 @@ export class FormAssistValidators {
 
     control.setErrors({ ...control.errors, ...errors });
   }
-
-  private static isString(value: any): boolean {
-    return ((typeof value) === 'string');
-  }
 }
 
