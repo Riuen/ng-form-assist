@@ -70,7 +70,6 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.eventSubscription) {
       this.eventSubscription.unsubscribe();
-      console.log('test_event subscription destroyed');
     }
   }
 

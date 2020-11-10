@@ -9,17 +9,8 @@
 - [Basic Usage](#basic-usage)
     - [Example Implementation](#basic-example)
 - [Customization](#customization)
-    - [Enable/Disable Trim](#enable/disable-trim)
-    - [Enable/Disable Error Messages](#disable-error-messages)
-    - [Enable/Disable CSS class change](#disable-css-class-change)
-    - [Apply custom error message styling](#custom-error-message-class)
-    - [Apply custom class to form field on error](#custom-error-form-class)
 - [Angular Validator Support](#angular-validator-support)
 - [Form Assist Validators](#form-assist-validators)
-
-<br/><br/>
-
-> __Note:__ At this time, the css class which is applied to form fields in an error state is `is-invalid`, which is a bootstrap class. This means that this library is best suited for forms styled with bootstrap at this time. I will be working to remove this limitation and allow more customizable styling options in a later update!
 
 <br/><br/>
 
@@ -52,7 +43,7 @@ import { NgFormAssistModule } from 'ng-form-assist';
   ],
   imports: [
     ...
-    NgFormAssistModule,
+    NgFormAssistModule.forRoot({}),
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -60,7 +51,31 @@ import { NgFormAssistModule } from 'ng-form-assist';
 export class AppModule { }
 ```
 
-Then simply attach the `smartFormField` directive to any reactive form field. See [here](#basic-example) for an example.
+Then simply attach the `smartFormField` directive to any reactive form field. See [here](#basic-example) for an example. It is possible to configure the behaviour of the directive by passing an object of your custom configurations. Eg
+
+```
+import { NgFormAssistModule } from 'ng-form-assist';
+
+
+@NgModule({
+  declarations: [
+    ...
+  ],
+  imports: [
+    ...
+    NgFormAssistModule.forRoot({
+      applyTrim: true,
+      displayValidationMessages: true,
+      invalidFieldClass: 'is-invalid',
+      ...
+    }),
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+See [here](#customization) for a description of all supported configurations.
 
 <br/>
 
@@ -82,21 +97,16 @@ to see how to customize them! Below are the default messages that will be displa
 <br/>
 
 ## Customization
+It is possible to customize the behavior of the smartFormField directive.
 
-### Enable / Disable Trim
-The feature to disable/enable trimming of string data fields is coming soon!
+| Configuration               | Description                                    | Data Type | Default |
+| --------------------------- | ---------------------------------------------- | ----------| --------|
+| `applyTrim`                 | Trim the input for string data types.          | boolean   | true    |
+| `displayValidationMessages` | Display validation messages whenever they are violated. __Note:__ messages are displayed when the validation has been broken and the field has been marked as touched. | string | true |
+| `validationMessageClass`    | The styling class name (css, scss etc) that should be applied to the validation message. | string | null |    
+| `invalidFieldClass`         | The styling class name (css, scss etc) that should be applied to the form field when it is in an error state. __Note:__ If no value is specified then this behaviour will be disabled. | string | null |
+| `setBlankToNull`            | Convert the value of empty fields to null. | boolean | true |
 
-###  Disable Error Messages
-The feature to prevent error messages from being displayed is coming soon!
-
-### Disable CSS class change
-The feature to disable the changing of the css class when an error occurs is coming soon!
-
-### Custom error form class
-This feature will allow you to specify your own styling class that must be applied to the form field on error. Coming soon.
-
-### Custom error message class
-This feature will allow you to specify your own styling class that must be applied to the form error message. The form error message is currently displayed within a paragraph `<p>` tag.
 
 <br/>
 
