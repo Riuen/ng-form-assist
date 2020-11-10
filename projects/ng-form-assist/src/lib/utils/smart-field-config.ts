@@ -1,8 +1,8 @@
 export class SmartFieldConfig {
+    applyTrim?: boolean;
+    displayValidationMessages?: boolean;
+    setBlankToNull?: boolean; // Convert empty string to null
     enableClassChange?: boolean;
-    enableTrim?: boolean;
-    enableErrorMessages?: boolean;
-    convertEmptyStringToNull?: boolean;
     errorStyleClass?: string;
     errorMessageStyleClass?: string;
 }

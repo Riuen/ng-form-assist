@@ -1,18 +1,22 @@
 import { SmartFieldConfig } from './smart-field-config';
 
-export function initSmartFieldConfig(smartFieldConfig: SmartFieldConfig) {
-    smartFieldConfig.enableClassChange = smartFieldConfig.enableClassChange || true;
-    smartFieldConfig.enableErrorMessages = smartFieldConfig.enableErrorMessages || true;
-    smartFieldConfig.enableTrim = smartFieldConfig.enableTrim || true;
-    smartFieldConfig.errorStyleClass = smartFieldConfig.errorStyleClass || '';
-    smartFieldConfig.errorMessageStyleClass = smartFieldConfig.errorMessageStyleClass || '';
-    smartFieldConfig.convertEmptyStringToNull = smartFieldConfig.convertEmptyStringToNull || true;
+export function initSmartFieldConfig(config: SmartFieldConfig) {
+    config.enableClassChange = config.enableClassChange || true;
+    config.displayValidationMessages = (config.displayValidationMessages == null)
+        ? true
+        : config.displayValidationMessages;
+    config.applyTrim = config.applyTrim || true;
+    config.errorStyleClass = (config.enableClassChange && config.errorStyleClass) 
+        ? config.errorStyleClass
+        : '';
+    config.errorMessageStyleClass = config.errorMessageStyleClass || '';
+    config.setBlankToNull = config.setBlankToNull || true;
 
-    return smartFieldConfig;
+    return config;
 }
 
 /* Trims leading and trailing spaces, sets empty string to null */
-export function trimValue(input: any) {
+export function formatInput(input: any, setBlankToNull: boolean) {
 
     if (!isString(input)) {
       return input;
@@ -22,7 +26,7 @@ export function trimValue(input: any) {
 
       input = (input.length > 0)
         ? input.trim()
-        : null;
+        : (setBlankToNull) ? null : input;
 
       return input;
     }

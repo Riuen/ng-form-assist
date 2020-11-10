@@ -8,7 +8,7 @@ import { debounceTime } from 'rxjs/operators';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
 import { SmartFieldConfig } from '../utils/smart-field-config';
-import { trimValue } from '../utils/utilities';
+import { formatInput } from '../utils/utilities';
 
 /**
  * This directive was created as a utility to handle the following:
@@ -55,7 +55,7 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    if (this.config.enableErrorMessages) {
+    if (this.config.displayValidationMessages) {
       this.createErrorComponent();
       this.eventSubscription = this.fieldControl.control.statusChanges
         .pipe(debounceTime(300))
@@ -70,19 +70,19 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.eventSubscription) {
       this.eventSubscription.unsubscribe();
-      console.log('event subscription destroyed');
+      console.log('test_event subscription destroyed');
     }
   }
 
 
   @HostListener('blur')
-  public onBlur() {
+  public onBlur(): void {
 
-    if (this.config.enableTrim) {
-      this.fieldControl.control.setValue(trimValue(this.fieldControl.value));
+    if (this.config.applyTrim) {
+      this.fieldControl.control.setValue(formatInput(this.fieldControl.value, this.config.setBlankToNull));
     }
     else if (this.trim) {
-      this.fieldControl.control.setValue(trimValue(this.fieldControl.value));
+      this.fieldControl.control.setValue(formatInput(this.fieldControl.value, this.config.setBlankToNull));
     }
   }
 

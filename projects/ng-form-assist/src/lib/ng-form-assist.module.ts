@@ -20,7 +20,7 @@ export class NgFormAssistModule {
   static forRoot(
     libConfiguration: SmartFieldConfig
   ): ModuleWithProviders<NgFormAssistModule> {
-    libConfiguration = initSmartFieldConfig(libConfiguration);
+    libConfiguration = initSmartFieldConfig(libConfiguration); // Set defaults if missing.
     return {
       ngModule: NgFormAssistModule,
       providers: [
