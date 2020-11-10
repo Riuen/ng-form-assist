@@ -35,8 +35,8 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   @HostBinding('class')
   public get elementClass() {
     // return this.fieldControl.invalid && this.fieldControl.touched && this.config.enableClassChange;
-    if (this.fieldControl.invalid && this.fieldControl.touched && this.config.enableClassChange) {
-      return `${this.defaultFieldStyleClass} ${this.config.errorStyleClass}`;
+    if (this.fieldControl.invalid && this.fieldControl.touched && this.config.invalidFieldClass) {
+      return `${this.defaultFieldStyleClass} ${this.config.invalidFieldClass}`;
     }
     else {
       return this.defaultFieldStyleClass;
@@ -117,6 +117,6 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     this.componentRef = this.target.createComponent(componentFactory);
     this.componentRef.instance.errorMessage = this.getErrorMessage();
     this.componentRef.instance.fieldControl = this.fieldControl;
-    this.componentRef.instance.fieldClass = this.config.errorMessageStyleClass;
+    this.componentRef.instance.fieldClass = this.config.validationMessageClass;
   }
 }

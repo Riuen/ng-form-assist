@@ -1,15 +1,12 @@
 import { SmartFieldConfig } from './smart-field-config';
 
 export function initSmartFieldConfig(config: SmartFieldConfig) {
-    config.enableClassChange = config.enableClassChange || true;
+
     config.displayValidationMessages = (config.displayValidationMessages == null)
         ? true
         : config.displayValidationMessages;
     config.applyTrim = config.applyTrim || true;
-    config.errorStyleClass = (config.enableClassChange && config.errorStyleClass) 
-        ? config.errorStyleClass
-        : '';
-    config.errorMessageStyleClass = config.errorMessageStyleClass || '';
+    config.validationMessageClass = config.validationMessageClass || '';
     config.setBlankToNull = config.setBlankToNull || true;
 
     return config;
