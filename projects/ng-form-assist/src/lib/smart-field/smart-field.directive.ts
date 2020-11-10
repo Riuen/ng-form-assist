@@ -1,9 +1,14 @@
-import { ComponentFactoryResolver, ComponentRef, Directive, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import {
+  ComponentFactoryResolver, ComponentRef, Directive, ElementRef,
+  HostBinding, HostListener, Input, OnDestroy, OnInit, ViewContainerRef
+} from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
+import { SmartFieldConfig } from '../utils/smart-field-config';
+import { formatInput } from '../utils/utilities';
 
 /**
  * This directive was created as a utility to handle the following:
@@ -25,41 +30,58 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
   private eventSubscription: Subscription;
+  private defaultFieldStyleClass: string;
 
-  @HostBinding('class.is-invalid')
-  public get isInvalid() {
-    return this.fieldControl.invalid && this.fieldControl.touched;
+  @HostBinding('class')
+  public get elementClass() {
+    // return this.fieldControl.invalid && this.fieldControl.touched && this.config.enableClassChange;
+    if (this.fieldControl.invalid && this.fieldControl.touched && this.config.invalidFieldClass) {
+      return `${this.defaultFieldStyleClass} ${this.config.invalidFieldClass}`;
+    }
+    else {
+      return this.defaultFieldStyleClass;
+    }
   }
 
   constructor(
     private fieldControl: NgControl,
     private target: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver) {
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private hostElement: ElementRef,
+    private readonly config: SmartFieldConfig) {
+      this.defaultFieldStyleClass = this.hostElement.nativeElement.getAttribute('class');
   }
 
 
   ngOnInit(): void {
 
-    this.createErrorComponent();
-    this.eventSubscription = this.fieldControl.control.statusChanges
-      .pipe(debounceTime(300))
-      .subscribe(() => {
+    if (this.config.displayValidationMessages) {
+      this.createErrorComponent();
+      this.eventSubscription = this.fieldControl.control.statusChanges
+        .pipe(debounceTime(300))
+        .subscribe(() => {
 
-        this.componentRef.instance.errorMessage = this.getErrorMessage();
-        this.fieldControl.control.markAsTouched();
-      });
+          this.componentRef.instance.errorMessage = this.getErrorMessage();
+          this.fieldControl.control.markAsTouched();
+        });
+    }
   }
 
   ngOnDestroy(): void {
-    this.eventSubscription.unsubscribe();
+    if (this.eventSubscription) {
+      this.eventSubscription.unsubscribe();
+    }
   }
 
 
   @HostListener('blur')
-  public onBlur() {
+  public onBlur(): void {
 
-    if (this.trim) {
-      this.formatInput();
+    if (this.config.applyTrim) {
+      this.fieldControl.control.setValue(formatInput(this.fieldControl.value, this.config.setBlankToNull));
+    }
+    else if (this.trim) {
+      this.fieldControl.control.setValue(formatInput(this.fieldControl.value, this.config.setBlankToNull));
     }
   }
 
@@ -94,28 +116,6 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     this.componentRef = this.target.createComponent(componentFactory);
     this.componentRef.instance.errorMessage = this.getErrorMessage();
     this.componentRef.instance.fieldControl = this.fieldControl;
-  }
-
-  /* Trims leading and trailing spaces, sets empty string to null */
-  private formatInput() {
-
-    let input = this.fieldControl.value;
-
-    if (!this.isString(input)) {
-      return;
-    }
-
-    if (input) {
-
-      input = (input.length > 0)
-        ? input.trim()
-        : null;
-
-      this.fieldControl.control.setValue(input);
-    }
-  }
-
-  private isString(value: any): boolean {
-    return ((typeof value) === 'string');
+    this.componentRef.instance.fieldClass = this.config.validationMessageClass;
   }
 }

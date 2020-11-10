@@ -12,9 +12,9 @@ import { NgControl } from '@angular/forms';
 @Component({
     selector: 'lib-field-error-view',
     template: `
-        <p *ngIf="fieldControl.touched" class="text-danger">
+        <div *ngIf="fieldControl.touched" [class]="fieldClass">
             {{ errorMessage}}
-        </p>
+        </div>
     `,
     styles: [
     ]
@@ -26,6 +26,9 @@ export class FieldErrorViewComponent {
 
     @Input()
     public fieldControl: NgControl;
+
+    @Input()
+    public fieldClass: string;
 
 
     constructor() { }
