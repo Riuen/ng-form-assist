@@ -25,7 +25,7 @@ import { formatInput } from '../utils/utilities';
 })
 export class SmartFieldDirective implements OnInit, OnDestroy {
 
-  @Input() public trim = true;
+  @Input() public applyTrim: boolean;
 
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
@@ -77,12 +77,8 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   @HostListener('blur')
   public onBlur(): void {
 
-    if (this.config.applyTrim) {
-      this.fieldControl.control.setValue(formatInput(this.fieldControl.value, this.config.setBlankToNull));
-    }
-    else if (this.trim) {
-      this.fieldControl.control.setValue(formatInput(this.fieldControl.value, this.config.setBlankToNull));
-    }
+    const formattedInput = formatInput(this.fieldControl.value, (this.config.applyTrim || this.applyTrim), this.config.setBlankToNull);
+    this.fieldControl.control.setValue(formattedInput);
   }
 
 
