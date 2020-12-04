@@ -280,12 +280,5 @@ At this stage we are essentially finished with our form. Once a validation rule 
 * Add more comprehensive documentation and examples.
 * Add more validators.
 * Add support for user defined validators.
-* Refactor to allow the following to be configurable by the user:
-    * Password complexity rules.
-    * The css class that must be applied to the field on error.
-    * Enable/Disable the trim feature.
-    * Enable/Disable the conversion of empty fields to null.
-    * Enable/Disable the displaying of error messages.
-    * Apply custom css to the error messages.
 * Add tests.
 * Create an interactive demo.
