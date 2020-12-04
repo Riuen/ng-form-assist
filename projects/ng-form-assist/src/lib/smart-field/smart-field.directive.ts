@@ -8,7 +8,6 @@ import { debounceTime } from 'rxjs/operators';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
 import { SmartFieldConfig } from '../utils/smart-field-config';
-import { formatInput } from '../utils/utilities';
 
 /**
  * This directive was created as a utility to handle the following:
@@ -31,6 +30,7 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   private componentRef: ComponentRef<FieldErrorViewComponent>;
   private eventSubscription: Subscription;
   private defaultFieldStyleClass: string;
+  private hostElementType: string;
 
   @HostBinding('class')
   public get elementClass() {
@@ -50,6 +50,7 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     private hostElement: ElementRef,
     private readonly config: SmartFieldConfig) {
       this.defaultFieldStyleClass = this.hostElement.nativeElement.getAttribute('class');
+      this.hostElementType = this.hostElement.nativeElement.getAttribute('type');
   }
 
 
@@ -77,8 +78,28 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   @HostListener('blur')
   public onBlur(): void {
 
-    const formattedInput = formatInput(this.fieldControl.value, (this.config.applyTrim || this.applyTrim), this.config.setBlankToNull);
-    this.fieldControl.control.setValue(formattedInput);
+    /* if (this.config.applyTrim || this.applyTrim || this.config.setBlankToNull) {
+      const formattedInput = formatInput(this.fieldControl.value, (this.config.applyTrim || this.applyTrim), this.config.setBlankToNull);
+      this.fieldControl.control.setValue(formattedInput);
+    } */
+
+    const input = this.fieldControl.value;
+    let formattedInput = this.fieldControl.value;
+
+    if (this.hostElementType === 'text') {
+
+      if (this.config.applyTrim || this.applyTrim) {
+        formattedInput = input?.trim();
+      }
+
+      if (this.config.setBlankToNull) {
+        formattedInput = formattedInput?.length === 0 ? null : formattedInput;
+      }
+
+      if (input?.length !== formattedInput?.length) {
+        this.fieldControl.control.setValue(formattedInput);
+      }
+    }
   }
 
 
