@@ -52,5 +52,5 @@ jobs:
         uses:  demyanets/angular-coverage-badges-action@v1
         with:
           coverage-summary-path: coverage/ng-form-assist/coverage-summary.json
-          protected-branches: '["master",  "dev"]'
+          protected-branches: '["master"]'
         
