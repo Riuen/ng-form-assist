@@ -43,6 +43,7 @@ jobs:
           
       - name: Test
         run: npm install
+          ng test
           
       # Runs a single command using the runners shell
       #- name: Execute unit tests
