@@ -47,8 +47,11 @@ jobs:
       - name: Setup Angular CLI
         run: npm install -g @angular/cli@10.x.x
 
+      - name: Build project
+        run: ng build --prod
+
       - name: Run tests
-        run: ng test --watch=false --browsers=ChromeHeadlessCustom
+        run: ng test --watch=false
           
       # Runs a single command using the runners shell
       #- name: Execute unit tests
