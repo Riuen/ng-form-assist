@@ -51,6 +51,6 @@ jobs:
       - name: Test angular action
         uses:  demyanets/angular-coverage-badges-action@v1
         with:
-          coverage-summary-path: coverage/stslib/coverage-summary.json
+          coverage-summary-path: coverage/ng-form-assist/coverage-summary.json
           protected-branches: '["master",  "dev"]'
         
