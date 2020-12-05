@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master, dev ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -45,13 +45,4 @@ jobs:
 
       - name: Run tests
         run: ng test --browsers=ChromeHeadless --watch=false --code-coverage
-          
-      # Coverage badges will be updated on any branch except protected
-      # branches 'develop' and 'master' and on a pull requests
-      - name: Test angular action
-        uses:  demyanets/angular-coverage-badges-action@v1
-        with:
-          coverage-summary-path: coverage/ng-form-assist/coverage-summary.json
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          protected-branches: '["master"]'
         
