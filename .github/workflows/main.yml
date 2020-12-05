@@ -41,9 +41,11 @@ jobs:
           node-version: 12.x
           check-latest: true
           
-      - name: Test
+      - name: Install dependencies
         run: npm install
-          ng test
+
+      - name: Run tests
+        run: ng test --watch=false --browsers=ChromeHeadlessCustom
           
       # Runs a single command using the runners shell
       #- name: Execute unit tests
