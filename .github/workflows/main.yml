@@ -44,7 +44,7 @@ jobs:
       - name: Test  
         uses: colbyhill21/angular-full-ci/@v1.0
         with:
-          testcommand: run test:ci
+          testcommand: ng test --watch=false --browsers=ChromeHeadlessCustom
           
       # Runs a single command using the runners shell
       #- name: Execute unit tests
