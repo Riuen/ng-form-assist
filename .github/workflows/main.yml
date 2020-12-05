@@ -24,16 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
           
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
@@ -44,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Auditing project
+        run: npm audit
+
       - name: Setup Angular CLI
         run: npm install -g @angular/cli@10.x.x
 
@@ -53,7 +46,11 @@ jobs:
       - name: Run tests
         run: ng test --browsers=ChromeHeadless --watch=false --code-coverage
           
-      # Runs a single command using the runners shell
-      #- name: Execute unit tests
-      #  run: ng test
+      # Coverage badges will be updated on any branch except protected
+      # branches 'develop' and 'master' and on a pull requests
+      - name: Test angular action
+        uses:  demyanets/angular-coverage-badges-action@v1
+        with:
+          coverage-summary-path: coverage/stslib/coverage-summary.json
+          protected-branches: '["master",  "dev"]'
         
