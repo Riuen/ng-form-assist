@@ -41,10 +41,8 @@ jobs:
           node-version: 12.x
           check-latest: true
           
-      - name: Test  
-        uses: colbyhill21/angular-full-ci/@v1.0
-        with:
-          testcommand: ng test --watch=false --browsers=ChromeHeadlessCustom
+      - name: Test
+        run: npm install
           
       # Runs a single command using the runners shell
       #- name: Execute unit tests
