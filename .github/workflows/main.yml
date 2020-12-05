@@ -51,7 +51,7 @@ jobs:
         run: ng build --prod
 
       - name: Run tests
-        run: ng test --watch=false
+        run: ng test --browsers=ChromeHeadless --watch=false --code-coverage
           
       # Runs a single command using the runners shell
       #- name: Execute unit tests
