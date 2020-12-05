@@ -24,10 +24,11 @@ import { SmartFieldConfig } from '../utils/smart-field-config';
 })
 export class SmartFieldDirective implements OnInit, OnDestroy {
 
-  @Input() set applyTrim(trim: boolean) {
-    this.config.applyTrim = trim;
+  @Input() set applyTrim(trim: string) {
+    this.trim = (trim === 'true');
   }
 
+  private trim: boolean;
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
   private eventSubscription: Subscription;
@@ -36,7 +37,6 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
   @HostBinding('class')
   public get elementClass() {
-    // return this.fieldControl.invalid && this.fieldControl.touched && this.config.enableClassChange;
     if (this.fieldControl.invalid && this.fieldControl.touched && this.config.invalidFieldClass) {
       return `${this.defaultFieldStyleClass} ${this.config.invalidFieldClass}`;
     }
@@ -51,8 +51,9 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     private componentFactoryResolver: ComponentFactoryResolver,
     private hostElement: ElementRef,
     private readonly config: SmartFieldConfig) {
-      this.defaultFieldStyleClass = this.hostElement.nativeElement.getAttribute('class');
+      this.defaultFieldStyleClass = this.hostElement.nativeElement.getAttribute('class') || '';
       this.hostElementType = this.hostElement.nativeElement.getAttribute('type');
+      this.trim = config.applyTrim;
   }
 
 
@@ -85,7 +86,7 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
     if (this.hostElementType === 'text') {
 
-      if (this.config.applyTrim) {
+      if (this.trim) {
         formattedInput = input?.trim();
       }
 

@@ -1,0 +1,13 @@
+<br/>
+<form [formGroup]="form">
+    <input type="text" formControlName="f1" smartFormField #f1 />
+    <br/>
+    <input type="text" formControlName="requiredAngular" smartFormField #requiredAngular />
+    <br/>
+    <input type="text" formControlName="requiredCustom" smartFormField #requiredCustom />
+    <br/>
+    <input type="text" formControlName="requiredCustom_default" smartFormField #requiredCustom_default />
+    <br/>
+    <input type="text" formControlName="trimDisabledField" smartFormField #requiredCustom_default applyTrim="false" />
+</form>
+

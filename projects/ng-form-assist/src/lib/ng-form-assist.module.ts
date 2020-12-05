@@ -3,7 +3,6 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FieldErrorViewComponent } from './field-error-view/field-error-view.component';
 import { SmartFieldDirective } from './smart-field/smart-field.directive';
 import { SmartFieldConfig } from './utils/smart-field-config';
-import { initSmartFieldConfig } from './utils/utilities';
 
 
 @NgModule({
@@ -12,7 +11,7 @@ import { initSmartFieldConfig } from './utils/utilities';
     SmartFieldDirective
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [SmartFieldDirective]
 })
@@ -20,7 +19,7 @@ export class NgFormAssistModule {
   static forRoot(
     libConfiguration: SmartFieldConfig
   ): ModuleWithProviders<NgFormAssistModule> {
-    libConfiguration = initSmartFieldConfig(libConfiguration); // Set defaults if missing.
+    libConfiguration = this.initSmartFieldConfig(libConfiguration); // Set defaults if missing.
     return {
       ngModule: NgFormAssistModule,
       providers: [
@@ -30,5 +29,15 @@ export class NgFormAssistModule {
         },
       ],
     };
+  }
+
+  private static initSmartFieldConfig(config: SmartFieldConfig) {
+
+    config.displayValidationMessages = config.displayValidationMessages ?? true;
+    config.applyTrim = config.applyTrim ?? true;
+    config.validationMessageClass = config.validationMessageClass || '';
+    config.setBlankToNull = config.setBlankToNull ?? true;
+
+    return config;
   }
 }

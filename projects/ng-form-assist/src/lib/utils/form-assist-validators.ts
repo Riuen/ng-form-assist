@@ -13,7 +13,7 @@ export class FormAssistValidators {
       const result = Validators.required(control);
 
       return (result)
-        ? { _required: message || 'This field is required' }
+        ? { _required: message || 'This field is required.' }
         : null;
     };
 

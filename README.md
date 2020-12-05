@@ -280,5 +280,5 @@ At this stage we are essentially finished with our form. Once a validation rule 
 * Add more comprehensive documentation and examples.
 * Add more validators.
 * Add support for user defined validators.
-* Add tests.
+* Add more tests.
 * Create an interactive demo.
