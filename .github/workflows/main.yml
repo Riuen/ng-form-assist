@@ -52,5 +52,6 @@ jobs:
         uses:  demyanets/angular-coverage-badges-action@v1
         with:
           coverage-summary-path: coverage/ng-form-assist/coverage-summary.json
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           protected-branches: '["master"]'
         
