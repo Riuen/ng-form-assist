@@ -4,10 +4,11 @@ import {
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { FieldErrorViewComponent } from '../field-error-view/field-error-view.component';
 import { extractMessage } from '../utils/error-message-formatter';
 import { SmartFieldConfig } from '../utils/smart-field-config';
+import { manualComponentUpdateEvent } from '../utils/utilities';
 
 /**
  * This directive was created as a utility to handle the following:
@@ -31,7 +32,8 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   private trim: boolean;
   private errorRepo = new Map();
   private componentRef: ComponentRef<FieldErrorViewComponent>;
-  private eventSubscription: Subscription;
+  private valueChangeEventSubscription: Subscription;
+  private manualUpdateEventSubscription: Subscription;
   private defaultFieldStyleClass: string;
   private hostElementType: string;
 
@@ -51,9 +53,9 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     private componentFactoryResolver: ComponentFactoryResolver,
     private hostElement: ElementRef,
     private readonly config: SmartFieldConfig) {
-      this.defaultFieldStyleClass = this.hostElement.nativeElement.getAttribute('class') || '';
-      this.hostElementType = this.hostElement.nativeElement.getAttribute('type');
-      this.trim = config.applyTrim;
+    this.defaultFieldStyleClass = this.hostElement.nativeElement.getAttribute('class') || '';
+    this.hostElementType = this.hostElement.nativeElement.getAttribute('type');
+    this.trim = config.applyTrim;
   }
 
 
@@ -61,7 +63,16 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
 
     if (this.config.displayValidationMessages) {
       this.createErrorComponent();
-      this.eventSubscription = this.fieldControl.control.statusChanges
+
+      this.manualUpdateEventSubscription = manualComponentUpdateEvent()
+        .pipe(filter(field => field === this.fieldControl.name))
+        .subscribe(() => {
+
+          this.componentRef.instance.errorMessage = this.getErrorMessage();
+          this.fieldControl.control.markAsTouched();
+        });
+
+      this.valueChangeEventSubscription = this.fieldControl.control.valueChanges
         .pipe(debounceTime(300))
         .subscribe(() => {
 
@@ -72,8 +83,11 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.eventSubscription) {
-      this.eventSubscription.unsubscribe();
+    if (this.valueChangeEventSubscription) {
+      this.valueChangeEventSubscription.unsubscribe();
+    }
+    if (this.manualUpdateEventSubscription) {
+      this.manualUpdateEventSubscription.unsubscribe();
     }
   }
 
