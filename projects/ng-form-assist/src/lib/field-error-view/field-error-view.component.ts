@@ -13,7 +13,7 @@ import { NgControl } from '@angular/forms';
     selector: 'lib-field-error-view',
     template: `
         <div *ngIf="fieldControl.touched" [class]="fieldClass">
-            {{ errorMessage}}
+            {{errorMessage}}
         </div>
     `,
     styles: [

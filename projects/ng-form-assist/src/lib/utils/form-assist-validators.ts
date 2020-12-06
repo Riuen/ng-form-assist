@@ -1,4 +1,5 @@
 import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { triggerComponentUpdate } from './utilities';
 
 export class FormAssistValidators {
 
@@ -159,13 +160,19 @@ export class FormAssistValidators {
       if (f1Control?.value && f2Control?.value) {
 
         if (f1Control.value !== f2Control.value) {
-          this.addErrors({ passwordMatch: message }, f1Control);
-          this.addErrors({ passwordMatch: message }, f2Control);
+
+          if (!f1Control.hasError('fieldMatch') && !f2Control.hasError('fieldMatch')) {
+            this.addErrors({ fieldMatch: message }, f1Control, field1);
+            this.addErrors({ fieldMatch: message }, f2Control, field2);
+          }
           return null;
         }
         else {
-          this.removeErrors(['passwordMatch'], f1Control);
-          this.removeErrors(['passwordMatch'], f2Control);
+
+          if (f1Control.hasError('fieldMatch') && f2Control.hasError('fieldMatch')) {
+            this.removeErrors(['fieldMatch'], f1Control, field1);
+            this.removeErrors(['fieldMatch'], f2Control, field2);
+          }
           return null;
         }
       }
@@ -273,7 +280,7 @@ export class FormAssistValidators {
   }
 
 
-  private static removeErrors(keys: string[], control: AbstractControl) {
+  private static removeErrors(keys: string[], control: AbstractControl, fieldName: string) {
     if (!control || !keys || keys.length === 0) {
       return;
     }
@@ -288,14 +295,17 @@ export class FormAssistValidators {
     if (Object.keys(control.errors || {}).length === 0) {
       control.setErrors(null);
     }
+
+    triggerComponentUpdate(fieldName);
   }
 
-  private static addErrors(errors: { [key: string]: any }, control: AbstractControl) {
+  private static addErrors(errors: { [key: string]: any }, control: AbstractControl, fieldName: string) {
     if (!control || !errors) {
       return;
     }
 
     control.setErrors({ ...control.errors, ...errors });
+    triggerComponentUpdate(fieldName);
   }
 }
 
