@@ -9,6 +9,9 @@ import { FormAssistValidators, NgFormAssistModule } from 'ng-form-assist';
     <form [formGroup]="form">
         <input type="text" formControlName="p1" smartFormField #p1 />
         <input type="text" formControlName="p2" smartFormField #p2 />
+
+        <input type="text" formControlName="p3" smartFormField #p3 />
+        <input type="text" formControlName="p4" smartFormField #p4 />
     </form>
     `
 })
@@ -16,14 +19,21 @@ class TestFieldMatchComponent {
 
     @ViewChild('p1') p1: ElementRef<HTMLInputElement>;
     @ViewChild('p2') p2: ElementRef<HTMLInputElement>;
+    @ViewChild('p3') p3: ElementRef<HTMLInputElement>;
+    @ViewChild('p4') p4: ElementRef<HTMLInputElement>;
 
     form = new FormGroup({
         p1: new FormControl(null),
         p2: new FormControl(null),
+        p3: new FormControl(null),
+        p4: new FormControl(null)
     });
 
     constructor() {
-        this.form.setValidators(FormAssistValidators.fieldMatch('p1', 'p2'));
+        this.form.setValidators([
+            FormAssistValidators.fieldMatch('p1', 'p2'),
+            FormAssistValidators.fieldMatch('p3', 'p4', 'custom field match message')
+        ]);
     }
 }
 
@@ -75,6 +85,19 @@ describe('Field Match Validator', () => {
         const defaultErrorMsg = 'Value for p1 does not match p2.';
 
         expect(f1Error === defaultErrorMsg && f2Error === defaultErrorMsg).toBeTrue();
+    });
+
+    it('should display the user defined validation message if one is set when the specified fields do not match.', () => {
+
+        component.form.get('p3').setValue('password');
+        component.form.get('p4').setValue('passwor');
+        component.form.markAllAsTouched();
+        fixture.detectChanges();
+        const f3Error: string = component.p3.nativeElement.nextElementSibling.textContent.trim();
+        const f4Error: string = component.p4.nativeElement.nextElementSibling.textContent.trim();
+        const defaultErrorMsg = 'custom field match message';
+
+        expect(f3Error === defaultErrorMsg && f4Error === defaultErrorMsg).toBeTrue();
     });
 
     it('should remove the validation message when the specified fields match.', () => {
