@@ -161,18 +161,14 @@ export class FormAssistValidators {
 
         if (f1Control.value !== f2Control.value) {
 
-          if (!f1Control.hasError('fieldMatch') && !f2Control.hasError('fieldMatch')) {
-            this.addErrors({ fieldMatch: message }, f1Control, field1);
-            this.addErrors({ fieldMatch: message }, f2Control, field2);
-          }
-          return null;
+          this.addErrors({ fieldMatch: message }, f1Control, field1, 'fieldMatch');
+          this.addErrors({ fieldMatch: message }, f2Control, field2, 'fieldMatch');
+          return { fieldMatch: message };
         }
         else {
 
-          if (f1Control.hasError('fieldMatch') && f2Control.hasError('fieldMatch')) {
-            this.removeErrors(['fieldMatch'], f1Control, field1);
-            this.removeErrors(['fieldMatch'], f2Control, field2);
-          }
+          this.removeErrors('fieldMatch', f1Control, field1);
+          this.removeErrors('fieldMatch', f2Control, field2);
           return null;
         }
       }
@@ -280,15 +276,13 @@ export class FormAssistValidators {
   }
 
 
-  private static removeErrors(keys: string[], control: AbstractControl, fieldName: string) {
-    if (!control || !keys || keys.length === 0) {
+  private static removeErrors(errorName: string, control: AbstractControl, fieldName: string) {
+    if (!control || !errorName || (!control.hasError(errorName))) {
       return;
     }
 
-    const remainingErrors = keys.reduce((errors, key) => {
-      delete errors[key];
-      return errors;
-    }, { ...control.errors });
+    const remainingErrors = control.errors;
+    delete remainingErrors[errorName];
 
     control.setErrors(remainingErrors);
 
@@ -299,8 +293,8 @@ export class FormAssistValidators {
     triggerComponentUpdate(fieldName);
   }
 
-  private static addErrors(errors: { [key: string]: any }, control: AbstractControl, fieldName: string) {
-    if (!control || !errors) {
+  private static addErrors(errors: { [key: string]: any }, control: AbstractControl, fieldName: string, errorName: string) {
+    if (!control || !errors || (control.hasError(errorName))) {
       return;
     }
 
