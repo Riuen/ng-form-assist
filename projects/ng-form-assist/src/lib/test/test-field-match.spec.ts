@@ -74,30 +74,36 @@ describe('Field Match Validator', () => {
         expect(f1Class.includes('field-error-class') && f2Class.includes('field-error-class')).toBeTrue();
     });
 
-    it('should display the default validation message when the specified fields do not match.', () => {
+    it('should display the default validation message when the specified fields do not match.', (done) => {
 
         component.form.get('p1').setValue('password');
         component.form.get('p2').setValue('passwor');
         component.form.markAllAsTouched();
-        fixture.detectChanges();
-        const f1Error: string = component.p1.nativeElement.nextElementSibling.textContent.trim();
-        const f2Error: string = component.p2.nativeElement.nextElementSibling.textContent.trim();
         const defaultErrorMsg = 'Value for p1 does not match p2.';
 
-        expect(f1Error === defaultErrorMsg && f2Error === defaultErrorMsg).toBeTrue();
+        setTimeout(() => {
+            fixture.detectChanges();
+            const f1Error: string = component.p1.nativeElement.nextElementSibling.textContent.trim();
+            const f2Error: string = component.p2.nativeElement.nextElementSibling.textContent.trim();
+            expect(f1Error === defaultErrorMsg && f2Error === defaultErrorMsg).toBeTrue();
+            done();
+        }, 350);
     });
 
-    it('should display the user defined validation message if one is set when the specified fields do not match.', () => {
+    it('should display the user defined validation message if one is set when the specified fields do not match.', (done) => {
 
         component.form.get('p3').setValue('password');
         component.form.get('p4').setValue('passwor');
         component.form.markAllAsTouched();
-        fixture.detectChanges();
-        const f3Error: string = component.p3.nativeElement.nextElementSibling.textContent.trim();
-        const f4Error: string = component.p4.nativeElement.nextElementSibling.textContent.trim();
         const defaultErrorMsg = 'custom field match message';
 
-        expect(f3Error === defaultErrorMsg && f4Error === defaultErrorMsg).toBeTrue();
+        setTimeout(() => {
+            fixture.detectChanges();
+            const f3Error: string = component.p3.nativeElement.nextElementSibling.textContent.trim();
+            const f4Error: string = component.p4.nativeElement.nextElementSibling.textContent.trim();
+            expect(f3Error === defaultErrorMsg && f4Error === defaultErrorMsg).toBeTrue();
+            done();
+        }, 350);
     });
 
     it('should remove the validation message when the specified fields match.', () => {

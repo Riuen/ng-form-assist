@@ -1,5 +1,4 @@
 import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { triggerComponentUpdate } from './utilities';
 
 export class FormAssistValidators {
 
@@ -161,14 +160,14 @@ export class FormAssistValidators {
 
         if (f1Control.value !== f2Control.value) {
 
-          this.addErrors({ fieldMatch: message }, f1Control, field1, 'fieldMatch');
-          this.addErrors({ fieldMatch: message }, f2Control, field2, 'fieldMatch');
+          this.addErrors({ fieldMatch: message }, f1Control, 'fieldMatch');
+          this.addErrors({ fieldMatch: message }, f2Control, 'fieldMatch');
           return { fieldMatch: message };
         }
         else {
 
-          this.removeErrors('fieldMatch', f1Control, field1);
-          this.removeErrors('fieldMatch', f2Control, field2);
+          this.removeErrors('fieldMatch', f1Control);
+          this.removeErrors('fieldMatch', f2Control);
           return null;
         }
       }
@@ -276,7 +275,7 @@ export class FormAssistValidators {
   }
 
 
-  private static removeErrors(errorName: string, control: AbstractControl, fieldName: string) {
+  private static removeErrors(errorName: string, control: AbstractControl) {
     if (!control || !errorName || (!control.hasError(errorName))) {
       return;
     }
@@ -289,17 +288,14 @@ export class FormAssistValidators {
     if (Object.keys(control.errors || {}).length === 0) {
       control.setErrors(null);
     }
-
-    triggerComponentUpdate(fieldName);
   }
 
-  private static addErrors(errors: { [key: string]: any }, control: AbstractControl, fieldName: string, errorName: string) {
+  private static addErrors(errors: { [key: string]: any }, control: AbstractControl, errorName: string) {
     if (!control || !errors || (control.hasError(errorName))) {
       return;
     }
 
     control.setErrors({ ...control.errors, ...errors });
-    triggerComponentUpdate(fieldName);
   }
 }
 
