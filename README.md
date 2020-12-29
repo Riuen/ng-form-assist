@@ -1,9 +1,5 @@
 # NgFormAssist
 
-## Warning experimental! (Under development)
-
-<br/>
-
 ## Table Of Contents
 - [Basic Overview](#basic-overview)
 - [Basic Usage](#basic-usage)
