@@ -118,6 +118,7 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
       }
       else {
         message = extractMessage(errorName, this.fieldControl.errors[errorName]);
+        message = this.isString(message) ? message : 'Invalid input.';
         this.errorRepo.set(errorName, message);
       }
     }
@@ -135,5 +136,9 @@ export class SmartFieldDirective implements OnInit, OnDestroy {
     this.componentRef.instance.errorMessage = this.getErrorMessage();
     this.componentRef.instance.fieldControl = this.fieldControl;
     this.componentRef.instance.fieldClass = this.config.validationMessageClass;
+  }
+
+  private isString (input: any) {
+    return (Object.prototype.toString.call(input) === '[object String]');
   }
 }
