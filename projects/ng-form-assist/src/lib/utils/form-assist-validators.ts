@@ -156,20 +156,21 @@ export class FormAssistValidators {
       const f1Control = fg.get(field1);
       const f2Control = fg.get(field2);
 
-      if (f1Control?.value && f2Control?.value) {
+      if (!f1Control?.value || !f2Control?.value) {
+        return null;
+      }
 
-        if (f1Control.value !== f2Control.value) {
+      if (f1Control.value !== f2Control.value) {
 
-          this.addErrors({ fieldMatch: message }, f1Control, 'fieldMatch');
-          this.addErrors({ fieldMatch: message }, f2Control, 'fieldMatch');
-          return { fieldMatch: message };
-        }
-        else {
+        this.addErrors({ fieldMatch: message }, f1Control, 'fieldMatch');
+        this.addErrors({ fieldMatch: message }, f2Control, 'fieldMatch');
+        return { fieldMatch: message };
+      }
+      else {
 
-          this.removeErrors('fieldMatch', f1Control);
-          this.removeErrors('fieldMatch', f2Control);
-          return null;
-        }
+        this.removeErrors('fieldMatch', f1Control);
+        this.removeErrors('fieldMatch', f2Control);
+        return null;
       }
     };
 
