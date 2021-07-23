@@ -4,11 +4,11 @@ name: CI
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the master and dev branch
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -38,7 +38,7 @@ jobs:
         run: npm install -g @angular/cli@12.x.x
 
       - name: Build project
-        run: ng build --prod
+        run: ng build
 
       - name: Run tests
         run: ng test --browsers=ChromeHeadless --watch=false --code-coverage
