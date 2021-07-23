@@ -34,11 +34,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Auditing project
-        run: npm audit
-
       - name: Setup Angular CLI
-        run: npm install -g @angular/cli@10.x.x
+        run: npm install -g @angular/cli@12.x.x
 
       - name: Build project
         run: ng build --prod
