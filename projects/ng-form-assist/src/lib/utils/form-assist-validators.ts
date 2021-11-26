@@ -1,4 +1,6 @@
 import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { addErrorToFormControl, removeErrorFromFormControl } from './reactive-form-error-utils';
+import { formatDate, isValidDate } from './utilities';
 
 export class FormAssistValidators {
 
@@ -162,14 +164,14 @@ export class FormAssistValidators {
 
       if (f1Control.value !== f2Control.value) {
 
-        this.addErrors({ fieldMatch: message }, f1Control, 'fieldMatch');
-        this.addErrors({ fieldMatch: message }, f2Control, 'fieldMatch');
+        addErrorToFormControl({ fieldMatch: message }, f1Control, 'fieldMatch');
+        addErrorToFormControl({ fieldMatch: message }, f2Control, 'fieldMatch');
         return { fieldMatch: message };
       }
       else {
 
-        this.removeErrors('fieldMatch', f1Control);
-        this.removeErrors('fieldMatch', f2Control);
+        removeErrorFromFormControl('fieldMatch', f1Control);
+        removeErrorFromFormControl('fieldMatch', f2Control);
         return null;
       }
     };
@@ -227,19 +229,17 @@ export class FormAssistValidators {
   public static dateAfter(date: Date | string, message?: string): ValidatorFn {
 
     const validatorFn = (control: AbstractControl) => {
-
-      if (control.value) {
-
-        const dateStr = new Date(date).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
-        const referenceDate = Date.parse(dateStr);
-        const controlDate = Date.parse(control.value);
-        message = message || `Date entered must be greater than ${dateStr}.`;
-        const enteredDate = controlDate > 0 ? controlDate : 0;
-
-        return (enteredDate > referenceDate)
+      
+      if (isValidDate(control.value)) {
+        const minDate = formatDate(date);
+        const enteredDate = formatDate(control.value);
+        const prettifiedMinDate = new Date(date).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
+        message = message || `Date entered must be greater than ${prettifiedMinDate}.`;
+        return (Date.parse(enteredDate) > Date.parse(minDate))
           ? null
           : { dateAfter: message };
       }
+
       return null;
     };
 
@@ -257,15 +257,14 @@ export class FormAssistValidators {
 
     const validatorFn = (control: AbstractControl) => {
 
-      if (control.value) {
+      if (isValidDate(control.value)) {
 
-        const dateStr = new Date(date).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
-        const referenceDate = Date.parse(dateStr);
-        const controlDate = Date.parse(control.value);
-        message = message || `Date entered must be less than ${dateStr}.`;
-        const enteredDate = controlDate > 0 ? controlDate : 0;
+        const maxDate = formatDate(date);
+        const enteredDate = formatDate(control.value);
+        const prettifiedMaxDate = new Date(date).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
+        message = message || `Date entered must be less than ${prettifiedMaxDate}.`;
 
-        return (enteredDate < referenceDate)
+        return (Date.parse(enteredDate) < Date.parse(maxDate))
           ? null
           : { dateBefore: message };
       }
@@ -275,28 +274,5 @@ export class FormAssistValidators {
     return validatorFn;
   }
 
-
-  private static removeErrors(errorName: string, control: AbstractControl) {
-    if (!control || !errorName || (!control.hasError(errorName))) {
-      return;
-    }
-
-    const remainingErrors = control.errors;
-    delete remainingErrors[errorName];
-
-    control.setErrors(remainingErrors);
-
-    if (Object.keys(control.errors || {}).length === 0) {
-      control.setErrors(null);
-    }
-  }
-
-  private static addErrors(errors: { [key: string]: any }, control: AbstractControl, errorName: string) {
-    if (!control || !errors || (control.hasError(errorName))) {
-      return;
-    }
-
-    control.setErrors({ ...control.errors, ...errors });
-  }
 }
 
