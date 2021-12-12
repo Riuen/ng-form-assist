@@ -5,7 +5,7 @@ import { AbstractControl } from "@angular/forms";
  * @param errorName Name of the error to remove
  * @param control Form control
  */
-export function removeErrorFromFormControl(errorName: string, control: AbstractControl): void {
+export function removeFormControlError(errorName: string, control: AbstractControl): void {
   if (!control || !errorName || (!control.hasError(errorName))) {
     return;
   }
@@ -26,7 +26,7 @@ export function removeErrorFromFormControl(errorName: string, control: AbstractC
  * @param errorName
  * @param errorMessage
  */
-export function addErrorToFormControl(control: AbstractControl, errorName: string, errorMessage: string): void {
+export function appendFormControlError(control: AbstractControl, errorName: string, errorMessage: string): void {
   if (!control || (control.hasError(errorName))) {
     return;
   }

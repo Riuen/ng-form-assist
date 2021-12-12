@@ -1,5 +1,5 @@
 import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { addErrorToFormControl, removeErrorFromFormControl } from './reactive-form-error-utils';
+import { appendFormControlError, removeFormControlError } from './reactive-form-error-utils';
 import { formatDate, isValidDate } from './utilities';
 
 export class FormAssistValidators {
@@ -163,13 +163,13 @@ export class FormAssistValidators {
       }
 
       if (f1Control.value !== f2Control.value) {
-        addErrorToFormControl(f1Control, 'fieldMatch', message);
-        addErrorToFormControl(f2Control, 'fieldMatch', message);
+        appendFormControlError(f1Control, 'fieldMatch', message);
+        appendFormControlError(f2Control, 'fieldMatch', message);
         return { fieldMatch: message };
       }
       else {
-        removeErrorFromFormControl('fieldMatch', f1Control);
-        removeErrorFromFormControl('fieldMatch', f2Control);
+        removeFormControlError('fieldMatch', f1Control);
+        removeFormControlError('fieldMatch', f2Control);
         return null;
       }
     };
