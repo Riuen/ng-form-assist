@@ -21,15 +21,18 @@ export function removeErrorFromFormControl(errorName: string, control: AbstractC
 }
 
 /**
- * Adds error objects to the passed form control.
- * @param errors Error objects to add to form control
- * @param control Form control
- * @param errorName 
+ * Appends an error to a form control
+ * @param control 
+ * @param errorName
+ * @param errorMessage
  */
-export function addErrorToFormControl(errors: { [key: string]: any }, control: AbstractControl, errorName: string): void {
-  if (!control || !errors || (control.hasError(errorName))) {
+export function addErrorToFormControl(control: AbstractControl, errorName: string, errorMessage: string): void {
+  if (!control || (control.hasError(errorName))) {
     return;
   }
 
-  control.setErrors({ ...control.errors, ...errors });
+  control.setErrors({
+    ...control.errors,
+    ... { [errorName]: errorMessage }
+  });
 }
