@@ -163,13 +163,11 @@ export class FormAssistValidators {
       }
 
       if (f1Control.value !== f2Control.value) {
-
-        addErrorToFormControl({ fieldMatch: message }, f1Control, 'fieldMatch');
-        addErrorToFormControl({ fieldMatch: message }, f2Control, 'fieldMatch');
+        addErrorToFormControl(f1Control, 'fieldMatch', message);
+        addErrorToFormControl(f2Control, 'fieldMatch', message);
         return { fieldMatch: message };
       }
       else {
-
         removeErrorFromFormControl('fieldMatch', f1Control);
         removeErrorFromFormControl('fieldMatch', f2Control);
         return null;
